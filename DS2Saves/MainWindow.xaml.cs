@@ -29,6 +29,18 @@ namespace DS2Saves
                 .GetFiles(SavesFolder.Text, "*").OrderByDescending(d => new FileInfo(d).CreationTime)
                 .Select(s => System.IO.Path.GetFileName(s));
         }
+        private string PathToGameTxt { 
+            get {
+                var ret = Environment.ExpandEnvironmentVariables(PathToGame.Text);
+                return ret;
+            } 
+        }
+        private string SavesFolderTxt { 
+            get { 
+                return Environment.ExpandEnvironmentVariables(SavesFolder.Text); 
+            } 
+        }
+        private string TemplateTxt => Template.Text;
         public MainWindow()
         {
             InitializeComponent();
@@ -40,10 +52,10 @@ namespace DS2Saves
 
         private void Save(object sender, RoutedEventArgs e)
         {
-            var savesFn = System.IO.Path.GetFileName(PathToGame.Text);
-            var storeFn = Template.Text.Replace("{date}", $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}");
-            var storePath = System.IO.Path.Combine(SavesFolder.Text, storeFn);
-            File.Copy(PathToGame.Text, storePath, overwrite: true);
+            var savesFn = System.IO.Path.GetFileName(PathToGameTxt);
+            var storeFn = TemplateTxt.Replace("{date}", $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}");
+            var storePath = System.IO.Path.Combine(SavesFolderTxt, storeFn);
+            File.Copy(PathToGameTxt, storePath, overwrite: true);
             AvailableSaves.ItemsSource = Saves();
         }
 
@@ -57,8 +69,8 @@ namespace DS2Saves
             var saveToRestore = AvailableSaves.SelectedItems[0]?.ToString();
             if (saveToRestore != null)
             {
-                var from = System.IO.Path.Combine(SavesFolder.Text, saveToRestore);
-                var to = PathToGame.Text;
+                var from = System.IO.Path.Combine(SavesFolderTxt, saveToRestore);
+                var to = PathToGameTxt;
                 File.Move(to, $"{to}.bak", overwrite: true);
                 File.Copy(from, to, overwrite: true);
                 MessageBox.Show($"{from} restored to {to}");

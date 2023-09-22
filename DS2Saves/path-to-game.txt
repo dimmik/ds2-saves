@@ -1,1 +1,1 @@
-c:\tmp\ds2\asdxcc.sl2
+%APPDATA%\tmp\template.txt
