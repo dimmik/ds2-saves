@@ -54,12 +54,19 @@ namespace DS2Saves
                 MessageBox.Show("Please select a save");
                 return;
             }
-            var saveToRestore = AvailableSaves.SelectedItems[0].ToString();
-            var from = System.IO.Path.Combine(SavesFolder.Text, saveToRestore);
-            var to = PathToGame.Text;
-            File.Move(to, $"{to}.bak", overwrite: true);
-            File.Copy(from, to, overwrite: true);
-            MessageBox.Show($"{from} restored to {to}");
+            var saveToRestore = AvailableSaves.SelectedItems[0]?.ToString();
+            if (saveToRestore != null)
+            {
+                var from = System.IO.Path.Combine(SavesFolder.Text, saveToRestore);
+                var to = PathToGame.Text;
+                File.Move(to, $"{to}.bak", overwrite: true);
+                File.Copy(from, to, overwrite: true);
+                MessageBox.Show($"{from} restored to {to}");
+            } 
+            else
+            {
+                MessageBox.Show($"NULL selected");
+            }
         }
 
         private void Refresh(object sender, RoutedEventArgs e)
